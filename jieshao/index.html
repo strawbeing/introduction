@@ -1,562 +1,1090 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <title>登录</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: #020617;
-      --accent: #3b82f6;
-      --accent-soft: rgba(59,130,246,0.15);
-      --border: rgba(148,163,184,0.25);
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --danger: #f97373;
-      --radius-lg: 18px;
-      --radius-sm: 10px;
-      --shadow-soft: 0 24px 80px rgba(15,23,42,0.85);
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>杨佳蕊 · 个人主页</title>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              warmGray: "#6B7280",
+              mistBlue: "#9FB8D3",
+              mistBlueDark: "#8AA7C2",
+              lightBeige: "#F7F3E9",
+            },
+          },
+        },
+      };
+    </script>
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: radial-gradient(circle at top, #1d4ed8 0, transparent 55%),
-                  radial-gradient(circle at bottom, #22c55e 0, transparent 55%),
-                  linear-gradient(135deg, #020617, #020617 45%, #020617 100%);
-      color: var(--text-main);
-    }
-
-    .login-shell {
-      width: 100%;
-      max-width: 420px;
-      position: relative;
-    }
-
-    .glow {
-      position: absolute;
-      inset: -1px;
-      border-radius: 28px;
-      background:
-        linear-gradient(120deg, rgba(56,189,248,0.15), transparent 25%, transparent 75%, rgba(96,165,250,0.25)),
-        radial-gradient(circle at top left, rgba(52,211,153,0.5), transparent 60%),
-        radial-gradient(circle at bottom right, rgba(59,130,246,0.7), transparent 60%);
-      filter: blur(18px);
-      opacity: 0.9;
-      z-index: -1;
-    }
-
-    .card {
-      position: relative;
-      border-radius: 24px;
-      padding: 28px 26px 26px;
-      background: radial-gradient(circle at top, rgba(148,163,184,0.18), transparent 60%),
-                  linear-gradient(145deg, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
-      border: 1px solid rgba(148,163,184,0.35);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(16px);
-      overflow: hidden;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
-      background: radial-gradient(circle at top left, rgba(59,130,246,0.45), transparent 60%),
-                  rgba(15,23,42,0.9);
-      color: #e5e7eb;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .badge-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
-    }
-
-    .header {
-      margin-bottom: 22px;
-    }
-
-    .title-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .title {
-      font-size: 26px;
-      font-weight: 650;
-      letter-spacing: -0.03em;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-      line-height: 1.5;
-    }
-
-    .hint-pill {
-      font-size: 11px;
-      color: var(--text-muted);
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px dashed rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.9);
-      white-space: nowrap;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field-label-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-    }
-
-    .field-label {
-      color: #cbd5f5;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
-
-    .field-label span {
-      color: #818cf8;
-      margin-left: 4px;
-      font-size: 11px;
-    }
-
-    .field-hint {
-      color: var(--text-muted);
-      font-size: 11px;
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    .input {
-      width: 100%;
-      padding: 11px 12px;
-      padding-left: 34px;
-      border-radius: 12px;
-      border: 1px solid rgba(148,163,184,0.5);
-      background: radial-gradient(circle at top, rgba(15,23,42,0.7), rgba(15,23,42,0.98));
-      color: var(--text-main);
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, transform 0.08s ease;
-    }
-
-    .input::placeholder {
-      color: rgba(148,163,184,0.9);
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 11px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 14px;
-      opacity: 0.8;
-      pointer-events: none;
-    }
-
-    .input:focus {
-      border-color: #60a5fa;
-      box-shadow: 0 0 0 1px rgba(96,165,250,0.8), 0 0 0 12px rgba(37,99,235,0.08);
-      background: radial-gradient(circle at top, rgba(30,64,175,0.55), rgba(15,23,42,0.98));
-      transform: translateY(-0.5px);
-    }
-
-    .input.error {
-      border-color: #f97373;
-      box-shadow: 0 0 0 1px rgba(248,113,113,0.65), 0 0 0 12px rgba(248,113,113,0.06);
-    }
-
-    .error-text {
-      margin-top: 4px;
-      font-size: 11px;
-      color: var(--danger);
-      min-height: 14px;
-    }
-
-    .actions-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 2px;
-      gap: 10px;
-      font-size: 11px;
-    }
-
-    .remember {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--text-muted);
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .remember input {
-      accent-color: #4f46e5;
-      width: 14px;
-      height: 14px;
-    }
-
-    .link {
-      color: #93c5fd;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .link:hover {
-      text-decoration: underline;
-    }
-
-    .submit-btn {
-      margin-top: 10px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 16px;
-      border: none;
-      background: linear-gradient(135deg, #4f46e5, #3b82f6);
-      color: white;
-      font-size: 14px;
-      font-weight: 550;
-      cursor: pointer;
-      box-shadow: 0 18px 40px rgba(37,99,235,0.55);
-      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
-    }
-
-    .submit-btn span.icon-arrow {
-      font-size: 15px;
-      transition: transform 0.12s ease;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 22px 55px rgba(37,99,235,0.7);
-      filter: brightness(1.06);
-    }
-
-    .submit-btn:active {
-      transform: translateY(0);
-      box-shadow: 0 12px 30px rgba(37,99,235,0.6);
-      filter: brightness(0.98);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .submit-btn.loading span.icon-arrow {
-      transform: translateX(3px);
-    }
-
-    .divider {
-      margin: 18px 0 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .divider-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(
-        to right,
-        transparent,
-        rgba(148,163,184,0.5),
-        transparent
-      );
-    }
-
-    .oauth-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .oauth-btn {
-      flex: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 9px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
-      color: var(--text-main);
-      font-size: 12px;
-      cursor: pointer;
-      transition: background-color 0.12s ease, transform 0.08s ease, box-shadow 0.1s ease, border-color 0.12s ease;
-    }
-
-    .oauth-btn:hover {
-      background: radial-gradient(circle at top, rgba(30,64,175,0.35), rgba(15,23,42,1));
-      border-color: rgba(129,140,248,0.8);
-      box-shadow: 0 12px 32px rgba(15,23,42,0.9);
-      transform: translateY(-0.5px);
-    }
-
-    .oauth-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 4px;
-      background: radial-gradient(circle at top, #f97316, #ea580c);
-    }
-
-    .footer {
-      margin-top: 12px;
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: center;
-    }
-
-    .footer a {
-      color: #a5b4fc;
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 480px) {
+    <style>
       body {
-        padding: 18px;
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background-color: #f7f3e9;
+        height: 100vh;
+        overflow: hidden; /* 让 main 成为滚动容器，便于 scroll-snap */
       }
 
-      .card {
-        padding: 22px 18px 20px;
-        border-radius: 20px;
+      html {
+        scroll-behavior: smooth;
       }
 
-      .title {
-        font-size: 22px;
+      /* 顶部导航：图标+文案，激活时胶囊底色 */
+      .topnav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 9999px;
+        color: #6b7280;
+        transition: background-color 300ms, color 300ms;
       }
-
-      .hint-pill {
-        display: none;
+      .topnav-link:hover {
+        background-color: #f3f4f6;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="login-shell">
-    <div class="glow" aria-hidden="true"></div>
+      .topnav-link.is-active {
+        background-color: rgba(159, 184, 211, 0.55);
+        color: #111827;
+      }
+      .topnav-icon {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+        opacity: 0.95;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-lightBeige">
+    <!-- 顶部统一导航 -->
+    <header class="fixed inset-x-0 top-0 z-50 bg-white/95 shadow-sm backdrop-blur">
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4"
+      >
+        <div class="text-base font-semibold tracking-wide text-gray-800">
+          杨佳蕊
+        </div>
+        <nav
+          class="hidden items-center gap-2 text-sm sm:flex"
+          aria-label="页面导航"
+        >
+          <a href="#home" class="topnav-link is-active" data-nav="home">
+            <svg class="topnav-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6a2 2 0 0 0-2-2h0a2 2 0 0 0-2 2v6H5a1 1 0 0 1-1-1v-9.5Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+            </svg>
+            首页
+          </a>
 
-    <div class="card">
-      <div class="badge">
-        <span class="badge-dot"></span>
-        安全工作空间 · 登录
+          <a href="#about" class="topnav-link" data-nav="about">
+            <svg class="topnav-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+              <path
+                d="M4.5 20a7.5 7.5 0 0 1 15 0"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+            </svg>
+            关于
+          </a>
+
+          <a href="#experience" class="topnav-link" data-nav="experience">
+            <svg class="topnav-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M8 7V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+              <path
+                d="M4 9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9 13h6"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+            </svg>
+            经历
+          </a>
+
+          <a href="#projects" class="topnav-link" data-nav="projects">
+            <svg class="topnav-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2V7Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+              <path
+                d="M12 9h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6V9Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+            </svg>
+            项目
+          </a>
+
+          <a href="#skills" class="topnav-link" data-nav="skills">
+            <svg class="topnav-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2l2.5 6.5L21 9l-5 4 1.5 7-5.5-3.5L6.5 20 8 13 3 9l6.5-.5L12 2Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+            </svg>
+            技能
+          </a>
+
+          <a href="#contact" class="topnav-link" data-nav="contact">
+            <svg class="topnav-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5v-11Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+              <path
+                d="M6.5 7.5l5.5 4 5.5-4"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            联系
+          </a>
+        </nav>
       </div>
+    </header>
 
-      <header class="header">
-        <div class="title-row">
-          <div>
-            <div class="title">欢迎回来</div>
-            <p class="subtitle">使用账号登录以继续访问你的控制台。</p>
+    <!-- 主体内容，留出导航高度 -->
+    <main
+      id="scrollRoot"
+      class="h-screen overflow-y-auto scroll-smooth snap-y snap-mandatory pt-20 pb-12"
+      style="scroll-padding-top: 80px"
+    >
+      <!-- 首页 -->
+      <section
+        id="home"
+        class="relative isolate snap-start scroll-mt-20 px-4 pb-16 min-h-[calc(100vh-80px)] overflow-hidden"
+      >
+        <!-- 首页底色：莫兰迪渐变（接近截图的柔和散射感） -->
+        <div class="pointer-events-none absolute inset-0 -z-10">
+          <div
+            class="absolute inset-0 opacity-90 [background:radial-gradient(60%_55%_at_25%_20%,rgba(242,214,216,0.55)_0%,rgba(242,214,216,0)_60%),radial-gradient(55%_55%_at_70%_25%,rgba(200,211,230,0.55)_0%,rgba(200,211,230,0)_62%),radial-gradient(55%_60%_at_85%_70%,rgba(207,230,223,0.55)_0%,rgba(207,230,223,0)_65%),radial-gradient(70%_80%_at_40%_85%,rgba(247,243,233,0.95)_0%,rgba(247,243,233,0.75)_55%,rgba(247,243,233,1)_100%)]"
+          ></div>
+          <div class="absolute -inset-10 bg-white/40 blur-3xl"></div>
+        </div>
+
+        <div
+          class="mx-auto flex w-full max-w-6xl flex-col items-center rounded-3xl bg-gradient-to-br from-white/95 via-white/90 to-[#F3F6FB] px-6 py-12 shadow-[0_18px_50px_rgba(148,163,184,0.35)]"
+        >
+          <!-- 顶部标题 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="group relative mb-6 h-24 w-24 sm:h-28 sm:w-28">
+              <!-- 莫兰迪渐变光晕（hover增强） -->
+              <div
+                class="absolute inset-[-18px] -z-10 rounded-full bg-gradient-to-br from-[#C8D3E6] via-[#E6D6DE] to-[#CFE6DF] opacity-60 blur-2xl transition-all duration-300 group-hover:inset-[-22px] group-hover:opacity-90 group-hover:blur-3xl"
+              ></div>
+              <img
+                src="file:///E:/job/证件3.jpg"
+                alt="头像"
+                class="h-full w-full rounded-full object-cover shadow-[0_18px_40px_rgba(15,23,42,0.18)] ring-4 ring-white/80 transition-transform duration-300 group-hover:scale-[1.02]"
+                loading="eager"
+                referrerpolicy="no-referrer"
+              />
+            </div>
+            <h1
+              class="text-4xl font-bold tracking-[0.2em] text-gray-800 sm:text-5xl"
+            >
+              杨佳蕊
+            </h1>
+            <p class="mt-4 text-sm text-warmGray sm:text-base">
+              AI产品经理 · 数据驱动决策 · AIGC实践者
+            </p>
           </div>
-          <div class="hint-pill">支持账号密码 & 单点登录</div>
-        </div>
-      </header>
 
-      <form id="loginForm" novalidate>
-        <div class="field">
-          <div class="field-label-row">
-            <label class="field-label" for="email">账号 / 邮箱<span>必填</span></label>
-            <span class="field-hint">示例：user@example.com</span>
+          <!-- 中间标签 -->
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <span
+              class="rounded-full bg-[#E9E7F5]/80 px-6 py-2 text-sm text-gray-700 shadow-sm"
+            >
+              产品思维
+            </span>
+            <span
+              class="rounded-full bg-[#E7F0FB]/80 px-6 py-2 text-sm text-gray-700 shadow-sm"
+            >
+              数据洞察
+            </span>
+            <span
+              class="rounded-full bg-[#E5F5F4]/80 px-6 py-2 text-sm text-gray-700 shadow-sm"
+            >
+              AI赋能
+            </span>
           </div>
-          <div class="input-wrap">
-            <span class="input-icon">＠</span>
-            <input
-              id="email"
-              name="email"
-              type="text"
-              class="input"
-              placeholder="输入你的登录账号或邮箱"
-              autocomplete="username"
-              required
-            />
+
+          <!-- 数据卡片 -->
+          <div
+            class="mt-10 grid w-full gap-6 px-2 sm:grid-cols-3 sm:px-0"
+          >
+            <div
+              class="flex flex-col items-center rounded-2xl bg-white/90 px-8 py-8 text-center shadow-[0_10px_30px_rgba(148,163,184,0.25)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(148,163,184,0.45)]"
+            >
+              <div class="text-sm text-warmGray">用户访问转化率提升</div>
+              <div class="mt-4 text-3xl font-semibold text-gray-800">
+                30%
+              </div>
+            </div>
+            <div
+              class="flex flex-col items-center rounded-2xl bg-white/90 px-8 py-8 text-center shadow-[0_10px_30px_rgba(148,163,184,0.25)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(148,163,184,0.45)]"
+            >
+              <div class="text-sm text-warmGray">数据样本</div>
+              <div class="mt-4 text-3xl font-semibold text-gray-800">
+                10万+
+              </div>
+            </div>
+            <div
+              class="flex flex-col items-center rounded-2xl bg-white/90 px-8 py-8 text-center shadow-[0_10px_30px_rgba(148,163,184,0.25)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(148,163,184,0.45)]"
+            >
+              <div class="text-sm text-warmGray">用户调研问卷</div>
+              <div class="mt-4 text-3xl font-semibold text-gray-800">
+                1000+
+              </div>
+            </div>
           </div>
-          <div id="emailError" class="error-text"></div>
-        </div>
 
-        <div class="field">
-          <div class="field-label-row">
-            <label class="field-label" for="password">密码<span>必填</span></label>
-            <a class="link" href="javascript:void(0)">忘记密码？</a>
+          <!-- 底部按钮 -->
+          <div class="mt-10 flex w-full justify-center px-2">
+            <a
+              href="#projects"
+              class="w-full max-w-xs rounded-[16px] bg-mistBlue px-8 py-3 text-center text-sm font-medium text-white shadow-md transition-transform transition-colors duration-300 hover:scale-[1.02] hover:bg-mistBlueDark focus:outline-none focus:ring-2 focus:ring-mistBlue/70 focus:ring-offset-2 focus:ring-offset-transparent"
+            >
+              查看作品集
+            </a>
           </div>
-          <div class="input-wrap">
-            <span class="input-icon">✦</span>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              class="input"
-              placeholder="不少于 6 位，建议包含字母和数字"
-              autocomplete="current-password"
-              required
-            />
+        </div>
+      </section>
+
+      <!-- 关于我 -->
+      <section
+        id="about"
+        class="snap-start scroll-mt-20 px-4 pb-16 min-h-[calc(100vh-80px)]"
+      >
+        <div
+          class="mx-auto w-full max-w-6xl rounded-3xl bg-[#F7F3E9] px-4 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8"
+        >
+          <div class="mb-8 text-center sm:mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 sm:text-3xl">
+              关于我
+            </h2>
           </div>
-          <div id="passwordError" class="error-text"></div>
+
+          <div class="grid gap-4 sm:grid-cols-3 sm:gap-6">
+            <div
+              class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+            >
+              <div class="mb-4 flex items-center gap-2">
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E9F0FF]"
+                >
+                  <span
+                    class="h-4 w-4 rounded-full border-2 border-mistBlue"
+                  ></span>
+                </span>
+                <span class="text-base font-semibold text-gray-800">
+                  产品思维
+                </span>
+              </div>
+              <p class="text-sm leading-relaxed text-warmGray">
+                从用户需求出发，构建完整产品方案，关注体验与商业价值的平衡。
+              </p>
+            </div>
+
+            <div
+              class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+            >
+              <div class="mb-4 flex items-center gap-2">
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#F1E9FF]"
+                >
+                  <span
+                    class="h-4 w-4 rounded-sm border-2 border-mistBlue"
+                  ></span>
+                </span>
+                <span class="text-base font-semibold text-gray-800">
+                  数据洞察
+                </span>
+              </div>
+              <p class="text-sm leading-relaxed text-warmGray">
+                10万+样本分析经验，擅长通过数据发现问题与增长机会。
+              </p>
+            </div>
+
+            <div
+              class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+            >
+              <div class="mb-4 flex items-center gap-2">
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E7F5FF]"
+                >
+                  <span
+                    class="h-4 w-4 rounded-md border-2 border-mistBlue"
+                  ></span>
+                </span>
+                <span class="text-base font-semibold text-gray-800">
+                  AI赋能
+                </span>
+              </div>
+              <p class="text-sm leading-relaxed text-warmGray">
+                AIGC工具深度实践，具备智能体设计和AI应用的经验。
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-[2fr,1.4fr] sm:gap-6"
+          >
+            <div
+              class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+            >
+              <div class="mb-4 flex items-center gap-2">
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E9F0FF]"
+                >
+                  <span
+                    class="h-4 w-4 rounded-full border-2 border-mistBlue"
+                  ></span>
+                </span>
+                <span class="text-base font-semibold text-gray-800">
+                  教育背景
+                </span>
+              </div>
+
+            <div class="space-y-1 text-sm text-warmGray">
+              <p class="font-medium text-gray-800">
+                南京农业大学 · 数据科学与大数据技术（本科）
+              </p>
+              <p>2021.09 - 2025.06</p>
+              <p>
+                主修课程：大数据处理与分析、Python/Java程序设计、机器学习、数据建模、软件工程等。
+              </p>
+            </div>
+            </div>
+
+            <div
+              class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+            >
+              <div class="mb-4 flex items-center gap-2">
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E7F5FF]"
+                >
+                  <span
+                    class="h-4 w-4 rounded-md border-2 border-mistBlue"
+                  ></span>
+                </span>
+                <span class="text-base font-semibold text-gray-800">
+                  联系方式
+                </span>
+              </div>
+
+              <div class="space-y-2 text-sm text-warmGray">
+                <div class="flex items-center gap-3">
+                  <span class="text-xs text-gray-500">电话</span>
+                  <span class="font-medium text-gray-800">
+                    151 3539 5853
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-xs text-gray-500">邮箱</span>
+                  <span class="font-medium text-gray-800">
+                    3215641086@qq.com
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div class="actions-row">
-          <label class="remember">
-            <input id="rememberMe" type="checkbox" checked />
-            <span>下次自动登录</span>
-          </label>
-          <span style="color: var(--text-muted);">
-            还没有账号？
-            <a class="link" href="javascript:void(0)">立即注册</a>
-          </span>
+      <!-- 工作经历 -->
+      <section
+        id="experience"
+        class="snap-start scroll-mt-20 px-4 pb-16 min-h-[calc(100vh-80px)]"
+      >
+        <div
+          class="mx-auto w-full max-w-6xl rounded-3xl bg-[#F7F3E9] px-4 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8"
+        >
+          <div class="mb-8 text-center sm:mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 sm:text-3xl">
+              工作/实习经历
+            </h2>
+          </div>
+
+          <div class="space-y-6 sm:space-y-8">
+            <article
+              class="rounded-3xl bg-white px-6 py-6 shadow-[0_10px_30px_rgba(148,163,184,0.28)] sm:px-8 sm:py-8"
+            >
+              <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+              >
+                <div class="flex-1">
+                  <div class="mb-3 flex items-center gap-3">
+                    <div
+                      class="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#D1E0F2] bg-[#F3F7FF]"
+                    >
+                      <div
+                        class="h-6 w-6 rounded-xl border-2 border-mistBlue border-dashed"
+                      ></div>
+                    </div>
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800">
+                        图迹科技
+                      </h3>
+                      <p class="text-xs text-warmGray">产品经理</p>
+                    </div>
+                  </div>
+
+                  <ul
+                    class="mt-2 space-y-1.5 text-sm leading-relaxed text-warmGray"
+                  >
+                    <li>
+                      ● 产品设计：独立负责「相似日分析」核心功能设计，通过洞察数据和访谈用户抽象出关键影响维度。
+                    </li>
+                    <li>
+                      ● 需求管理与文档撰写：撰写详细产品需求文档，明确功能逻辑、交互流程及异常场景，支撑研发与测试高效协作。
+                    </li>
+                    <li>
+                      ● 数据驱动增长：独立完成数据分析和核心指标复盘，包含指标拆解、自定义指标构建及结果解读。
+                    </li>
+                    <li>
+                      ● 项目协作：全程跟进开发、测试与交付，保障功能按时上线并完成版本复盘。
+                    </li>
+                  </ul>
+                </div>
+
+                <div
+                  class="text-right text-xs font-medium text-warmGray sm:pt-1"
+                >
+                  2025.08 - 2025.12
+                </div>
+              </div>
+            </article>
+
+            <article
+              class="rounded-3xl bg-white px-6 py-6 shadow-[0_10px_30px_rgba(148,163,184,0.24)] sm:px-8 sm:py-8"
+            >
+              <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+              >
+                <div class="flex-1">
+                  <div class="mb-3 flex items-center gap-3">
+                    <div
+                      class="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#E2DDF6] bg-[#F7F4FF]"
+                    >
+                      <div
+                        class="h-6 w-4 rounded-lg border-2 border-mistBlue"
+                      ></div>
+                    </div>
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800">
+                        广东小天才科技有限公司
+                      </h3>
+                      <p class="text-xs text-warmGray">产品经理（实习）
+                      </p>
+                    </div>
+                  </div>
+
+                  <ul
+                    class="mt-2 space-y-1.5 text-sm leading-relaxed text-warmGray"
+                  >
+                    <li>
+                      ● 竞品分析：深度分析课堂类&激励类产品的体验优势与功能短板，输出竞品分析报告，提炼关键需求点。
+                    </li>
+                    <li>
+                      ● 用户洞察：通过1000+问卷调研，总结核心需求与痛点，为功能迭代提供依据。
+                    </li>
+                    <li>
+                      ● 数据运营：使用Python处理超10万+条用户行为数据，挖掘使用习惯与留存变化趋势。
+                    </li>
+                    <li>
+                      ● 需求落地：负责功能方案撰写，和开发、设计、测试协同推动版本上线。
+                    </li>
+                  </ul>
+                </div>
+
+                <div
+                  class="text-right text-xs font-medium text-warmGray sm:pt-1"
+                >
+                  2024.07 - 2024.09
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
+      </section>
 
-        <button type="submit" id="submitBtn" class="submit-btn">
-          <span>登录</span>
-          <span class="icon-arrow">➜</span>
-        </button>
+      <!-- 项目经验 -->
+      <section
+        id="projects"
+        class="snap-start scroll-mt-20 px-4 pb-16 min-h-[calc(100vh-80px)]"
+      >
+        <div
+          class="mx-auto w-full max-w-6xl rounded-3xl bg-[#F7F3E9] px-4 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8"
+        >
+          <div class="mb-8 text-center sm:mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 sm:text-3xl">
+              项目经验
+            </h2>
+          </div>
 
-        <div class="divider">
-          <span class="divider-line"></span>
-          <span>或使用其他方式继续</span>
-          <span class="divider-line"></span>
+          <div class="grid gap-4 sm:grid-cols-3 sm:gap-6">
+            <article
+              class="flex h-full flex-col rounded-3xl bg-white px-6 py-6 shadow-[0_10px_28px_rgba(148,163,184,0.26)] sm:px-7 sm:py-7"
+            >
+              <div class="mb-3 flex items-center gap-3">
+                <div
+                  class="flex h-9 w-9 items-center justify-center rounded-2xl border border-[#D7E3F5] bg-[#F4F7FF]"
+                >
+                  <div
+                    class="h-5 w-5 rounded-xl border-2 border-mistBlue border-dashed"
+                  ></div>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-800 sm:text-base">
+                    每日AI简报智能体
+                  </h3>
+                  <p class="mt-0.5 text-xs text-warmGray">
+                    2024.02 - 2024.05
+                  </p>
+                </div>
+              </div>
+
+              <p class="mb-3 text-xs text-warmGray sm:text-sm">
+                基于 Coze 搭建多智能体协作系统，实现信息自动化采集、处理与结构化输出。
+              </p>
+
+              <ul
+                class="mb-4 space-y-1.5 text-xs leading-relaxed text-warmGray sm:text-sm"
+              >
+                <li>● 设计节点工作流，覆盖多个外部 API/ RSS 源。</li>
+                <li>
+                  ● 通过 Prompt Engineering 持续调优回答质量。
+                </li>
+                <li>
+                  ● 自动生成图文稿与每日简报，支持公众号及内部周报分发。
+                </li>
+              </ul>
+
+              <a
+                class="mt-auto inline-flex items-center gap-1 text-xs font-medium text-mistBlue hover:underline"
+                href="https://qr61.cn/oENWib/qCfKIb5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                查看作品
+                <span class="text-[10px]">➜</span>
+              </a>
+            </article>
+
+            <article
+              class="flex h-full flex-col rounded-3xl bg-white px-6 py-6 shadow-[0_10px_28px_rgba(148,163,184,0.22)] sm:px-7 sm:py-7"
+            >
+              <div class="mb-3 flex items-center gap-3">
+                <div
+                  class="flex h-9 w-9 items-center justify-center rounded-2xl border border-[#E0D7F7] bg-[#F8F4FF]"
+                >
+                  <div
+                    class="h-5 w-4 rounded-lg border-2 border-mistBlue"
+                  ></div>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-800 sm:text-base">
+                    二十四节气 MG 动画
+                  </h3>
+                  <p class="mt-0.5 text-xs text-warmGray">
+                    2024.02 - 2024.05
+                  </p>
+                </div>
+              </div>
+
+              <p class="mb-3 text-xs text-warmGray sm:text-sm">
+                探索 AIGC 在科普类内容中的应用，使用图像与视频生成模型完成主题动画短片。
+              </p>
+
+              <ul
+                class="mb-4 space-y-1.5 text-xs leading-relaxed text-warmGray sm:text-sm"
+              >
+                <li>
+                  ● 负责脚本与分镜设计，统一视觉语言与故事节奏。
+                </li>
+                <li>
+                  ● 结合 Midjourney / Runway 生成素材并进行二次编辑。
+                </li>
+                <li>
+                  ● 输出 24 期节气短视频，用于校园媒体矩阵传播。
+                </li>
+              </ul>
+
+              <a
+                class="mt-auto inline-flex items-center gap-1 text-xs font-medium text-mistBlue hover:underline"
+                href="https://qr61.cn/oENWib/qKSfcnz"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                查看作品
+                <span class="text-[10px]">➜</span>
+              </a>
+            </article>
+
+            <article
+              class="flex h-full flex-col rounded-3xl bg-white px-6 py-6 shadow-[0_10px_28px_rgba(148,163,184,0.22)] sm:px-7 sm:py-7"
+            >
+              <div class="mb-3 flex items-center gap-3">
+                <div
+                  class="flex h-9 w-9 items-center justify-center rounded-2xl border border-[#D8EFEA] bg-[#F3FBF8]"
+                >
+                  <div
+                    class="h-5 w-5 rounded-md border-2 border-mistBlue"
+                  ></div>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-800 sm:text-base">
+                    数据解读乡村发展与人口变迁
+                  </h3>
+                  <p class="mt-0.5 text-xs text-warmGray">
+                    2024.05 - 2024.06
+                  </p>
+                </div>
+              </div>
+
+              <p class="mb-3 text-xs text-warmGray sm:text-sm">
+                计算机设计大赛调研类赛道项目，量化乡村振兴成效。
+              </p>
+
+              <ul
+                class="mb-4 space-y-1.5 text-xs leading-relaxed text-warmGray sm:text-sm"
+              >
+                <li>● 构建多维度指标，设计 13 个评估维度。</li>
+                <li>
+                  ● 基于公开数据集分析人口迁移对经济的影响。
+                </li>
+                <li>
+                  ● 提炼洞察并输出可视化报告，提出针对不同地域的政策建议。
+                </li>
+              </ul>
+
+              <a
+                class="mt-auto inline-flex items-center gap-1 text-xs font-medium text-mistBlue hover:underline"
+                href="https://qr61.cn/oENWib/qm7N8qZ"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                查看作品
+                <span class="text-[10px]">➜</span>
+              </a>
+            </article>
+          </div>
         </div>
+      </section>
 
-        <div class="oauth-row">
-          <button type="button" class="oauth-btn">
-            <span class="oauth-icon"></span>
-            <span>企业单点登录</span>
-          </button>
-          <button type="button" class="oauth-btn">
-            <span class="oauth-icon" style="background: radial-gradient(circle at top,#22c55e,#16a34a);"></span>
-            <span>微信扫码登录</span>
-          </button>
+      <!-- 专业技能 -->
+      <section
+        id="skills"
+        class="snap-start scroll-mt-20 px-4 pb-16 min-h-[calc(100vh-80px)]"
+      >
+        <div
+          class="mx-auto flex w-full max-w-6xl flex-col gap-6 rounded-3xl bg-[#F7F3E9] px-4 pb-10 pt-6 sm:flex-row sm:gap-8 sm:px-8 sm:pb-12 sm:pt-8"
+        >
+          <div class="flex-1 space-y-4 sm:space-y-5">
+            <div class="mb-2 text-center sm:text-left">
+              <h2 class="text-2xl font-semibold text-gray-800 sm:text-3xl">
+                专业技能
+              </h2>
+            </div>
+
+            <div
+              class="rounded-2xl bg-white px-5 py-4 shadow-[0_10px_26px_rgba(148,163,184,0.26)]"
+            >
+              <div class="mb-3 flex items-center gap-2">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E9F0FF]"
+                >
+                  <div
+                    class="h-4 w-4 rounded-xl border-2 border-mistBlue border-dashed"
+                  ></div>
+                </div>
+                <span
+                  class="text-sm font-semibold text-gray-800 sm:text-base"
+                >
+                  产品设计
+                </span>
+              </div>
+              <div
+                class="flex flex-wrap gap-2 text-xs text-warmGray sm:text-sm"
+              >
+                <span
+                  class="rounded-full bg-[#F3F6FF] px-3 py-1 shadow-sm"
+                >
+                  Axure原型设计
+                </span>
+                <span
+                  class="rounded-full bg-[#F3F6FF] px-3 py-1 shadow-sm"
+                >
+                  Visio流程图
+                </span>
+                <span
+                  class="rounded-full bg-[#F3F6FF] px-3 py-1 shadow-sm"
+                >
+                  PRD文档撰写
+                </span>
+                <span
+                  class="rounded-full bg-[#F3F6FF] px-3 py-1 shadow-sm"
+                >
+                  需求分析与管理
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="rounded-2xl bg-white px-5 py-4 shadow-[0_10px_26px_rgba(148,163,184,0.22)]"
+            >
+              <div class="mb-3 flex items-center gap-2">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#F4ECFF]"
+                >
+                  <div
+                    class="h-4 w-4 rounded-md border-2 border-mistBlue"
+                  ></div>
+                </div>
+                <span
+                  class="text-sm font-semibold text-gray-800 sm:text-base"
+                >
+                  数据分析
+                </span>
+              </div>
+              <div
+                class="flex flex-wrap gap-2 text-xs text-warmGray sm:text-sm"
+              >
+                <span
+                  class="rounded-full bg-[#F7F2FF] px-3 py-1 shadow-sm"
+                >
+                  Python数据处理
+                </span>
+                <span
+                  class="rounded-full bg-[#F7F2FF] px-3 py-1 shadow-sm"
+                >
+                  统计建模
+                </span>
+                <span
+                  class="rounded-full bg-[#F7F2FF] px-3 py-1 shadow-sm"
+                >
+                  机器学习
+                </span>
+                <span
+                  class="rounded-full bg-[#F7F2FF] px-3 py-1 shadow-sm"
+                >
+                  深度学习实践
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="rounded-2xl bg-white px-5 py-4 shadow-[0_10px_26px_rgba(148,163,184,0.22)]"
+            >
+              <div class="mb-3 flex items-center gap-2">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E7F8F6]"
+                >
+                  <div
+                    class="h-4 w-4 rounded-md border-2 border-mistBlue border-dashed"
+                  ></div>
+                </div>
+                <span
+                  class="text-sm font-semibold text-gray-800 sm:text-base"
+                >
+                  AI工程
+                </span>
+              </div>
+              <div
+                class="flex flex-wrap gap-2 text-xs text-warmGray sm:text-sm"
+              >
+                <span
+                  class="rounded-full bg-[#ECFAF7] px-3 py-1 shadow-sm"
+                >
+                  AIGC工具应用
+                </span>
+                <span
+                  class="rounded-full bg-[#ECFAF7] px-3 py-1 shadow-sm"
+                >
+                  Cursor AI编程
+                </span>
+                <span
+                  class="rounded-full bg-[#ECFAF7] px-3 py-1 shadow-sm"
+                >
+                  Coze智能体开发
+                </span>
+                <span
+                  class="rounded-full bg-[#ECFAF7] px-3 py-1 shadow-sm"
+                >
+                  Prompt优化
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="flex flex-1 items-center justify-center rounded-3xl bg-white px-4 py-6 shadow-[0_12px_30px_rgba(148,163,184,0.26)] sm:px-6"
+          >
+            <div class="w-full max-w-md text-center">
+              <h3
+                class="mb-4 text-sm font-semibold text-gray-800 sm:text-base"
+              >
+                能力雷达图
+              </h3>
+              <div class="mx-auto max-w-xs">
+                <svg viewBox="0 0 200 200" class="w-full text-mistBlue/70">
+                  <g fill="none" stroke="#E5E7EB" stroke-width="0.8">
+                    <polygon
+                      points="100,20 168,60 168,140 100,180 32,140 32,60"
+                    />
+                    <polygon
+                      points="100,40 152,70 152,130 100,160 48,130 48,70"
+                    />
+                    <polygon
+                      points="100,60 136,80 136,120 100,140 64,120 64,80"
+                    />
+                    <polygon
+                      points="100,80 120,90 120,110 100,120 80,110 80,90"
+                    />
+                  </g>
+                  <polygon
+                    fill="rgba(159,184,211,0.35)"
+                    stroke="#9FB8D3"
+                    stroke-width="1.5"
+                    points="100,30 158,66 158,134 100,170 47,131 47,69"
+                  />
+                  <g stroke="#E5E7EB" stroke-width="1">
+                    <line x1="100" y1="100" x2="100" y2="20" />
+                    <line x1="100" y1="100" x2="168" y2="60" />
+                    <line x1="100" y1="100" x2="168" y2="140" />
+                    <line x1="100" y1="100" x2="100" y2="180" />
+                    <line x1="100" y1="100" x2="32" y2="140" />
+                    <line x1="100" y1="100" x2="32" y2="60" />
+                  </g>
+                  <g
+                    fill="#6B7280"
+                    font-size="10"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                  >
+                    <text x="100" y="12">产品设计</text>
+                    <text x="176" y="56">数据洞察</text>
+                    <text x="176" y="144">AI应用</text>
+                    <text x="100" y="190">跨域协作</text>
+                    <text x="24" y="144">用户洞察</text>
+                    <text x="24" y="56">落地交付
+                
+                    </text>
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
-      </form>
+      </section>
 
-      <div class="footer">
-        登录即表示你同意我们的
-        <a href="javascript:void(0)">服务条款</a>
-        和
-        <a href="javascript:void(0)">隐私政策</a>。
-      </div>
-    </div>
-  </div>
+      <!-- 联系我 -->
+      <section
+        id="contact"
+        class="snap-start scroll-mt-20 px-4 pb-4 min-h-[calc(100vh-80px)]"
+      >
+        <div
+          class="mx-auto grid w-full max-w-6xl gap-6 rounded-3xl bg-[#F7F3E9] px-4 pb-10 pt-6 sm:grid-cols-[1.4fr,1.1fr] sm:gap-8 sm:px-8 sm:pb-12 sm:pt-8"
+        >
+          <div
+            class="flex h-full flex-col rounded-3xl bg-white px-6 py-6 shadow-[0_12px_30px_rgba(148,163,184,0.26)] sm:px-8 sm:py-8"
+          >
+            <h2 class="text-xl font-semibold text-gray-800 sm:text-2xl">
+              联系我
+            </h2>
+            <h3 class="mt-4 text-base font-semibold text-gray-800">
+              期待加入
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-warmGray">
+              如果您对我的经历感兴趣，或者有任何合作机会，请随时与我联络。
+              我期待能够运用我的产品思维、数据分析能力和 AI 实践经验，为您的团队创造价值。
+            </p>
 
-  <script>
-    const form = document.getElementById("loginForm");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const emailError = document.getElementById("emailError");
-    const passwordError = document.getElementById("passwordError");
-    const submitBtn = document.getElementById("submitBtn");
+            <div class="mt-6 space-y-4">
+              <div
+                class="flex items-center justify-between rounded-2xl bg-[#F8FAFF] px-4 py-3 shadow-sm sm:px-5"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="flex h-9 w-9 items-center justify-center rounded-full bg-[#E5F0FF]"
+                  >
+                    <span class="text-mistBlue text-lg">☎</span>
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-400">电话</p>
+                    <p class="text-sm font-medium text-gray-800">
+                      15135395853
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-    function validateEmail(value) {
-      if (!value.trim()) return "请输入账号或邮箱";
-      // 简单邮箱校验，可按需替换
-      const emailLike = /.+@.+\..+/;
-      if (value.includes("@") && !emailLike.test(value)) {
-        return "邮箱格式好像不太对";
-      }
-      return "";
-    }
+              <div
+                class="flex items-center justify-between rounded-2xl bg-[#F8FAFF] px-4 py-3 shadow-sm sm:px-5"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="flex h-9 w-9 items-center justify-center rounded-full bg-[#E5F0FF]"
+                  >
+                    <span class="text-mistBlue text-lg">@</span>
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-400">邮箱</p>
+                    <p class="text-sm font-medium text-gray-800">
+                      3215641086@qq.com
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    function validatePassword(value) {
-      if (!value.trim()) return "请输入密码";
-      if (value.length < 6) return "密码长度至少 6 位";
-      return "";
-    }
+          <div
+            class="flex h-full flex-col rounded-3xl bg-white px-6 py-6 shadow-[0_12px_30px_rgba(148,163,184,0.26)] sm:px-8 sm:py-8"
+          >
+            <h3 class="text-base font-semibold text-gray-800 sm:text-lg">
+              核心优势
+            </h3>
 
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
+            <div class="mt-4 space-y-3">
+              <div
+                class="rounded-2xl bg-[#F8FAFF] px-4 py-3 text-sm shadow-sm"
+              >
+                <div class="mb-1 flex items-center gap-2">
+                  <div
+                    class="flex h-7 w-7 items-center justify-center rounded-full bg-[#E9F0FF]"
+                  >
+                    <span
+                      class="h-3 w-3 rounded-full border-2 border-mistBlue"
+                    ></span>
+                  </div>
+                  <span class="font-semibold text-gray-800">产品能力</span>
+                </div>
+                <p class="text-xs leading-relaxed text-warmGray">
+                  熟悉使用 Axure、Visio 完成原型与流程图设计，能够独立撰写 PRD，梳理需求。
+                </p>
+              </div>
 
-      emailError.textContent = "";
-      passwordError.textContent = "";
-      emailInput.classList.remove("error");
-      passwordInput.classList.remove("error");
+              <div
+                class="rounded-2xl bg-[#F9F6FF] px-4 py-3 text-sm shadow-sm"
+              >
+                <div class="mb-1 flex items-center gap-2">
+                  <div
+                    class="flex h-7 w-7 items-center justify-center rounded-full bg-[#F1E9FF]"
+                  >
+                    <span
+                      class="h-3 w-3 rounded-md border-2 border-mistBlue"
+                    ></span>
+                  </div>
+                  <span class="font-semibold text-gray-800">数据分析</span>
+                </div>
+                <p class="text-xs leading-relaxed text-warmGray">
+                  熟练使用 Python 进行数据处理与分析，拥有深度学习项目实践经验。
+                </p>
+              </div>
 
-      const emailVal = emailInput.value;
-      const passwordVal = passwordInput.value;
+              <div
+                class="rounded-2xl bg-[#F5FBF9] px-4 py-3 text-sm shadow-sm"
+              >
+                <div class="mb-1 flex items-center gap-2">
+                  <div
+                    class="flex h-7 w-7 items-center justify-center rounded-full bg-[#E7F8F6]"
+                  >
+                    <span
+                      class="h-3 w-3 rounded-md border-2 border-mistBlue border-dashed"
+                    ></span>
+                  </div>
+                  <span class="font-semibold text-gray-800">AI前沿能力</span>
+                </div>
+                <p class="text-xs leading-relaxed text-warmGray">
+                  熟练使用主流 AIGC 工具，擅长 Cursor AI 编程与智能体开发，具备 AI 应用落地能力。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
 
-      const emailErr = validateEmail(emailVal);
-      const passErr = validatePassword(passwordVal);
+    <script>
+      (function () {
+        const scrollRoot = document.getElementById("scrollRoot");
+        if (!scrollRoot) return;
 
-      let hasError = false;
+        const sections = Array.from(
+          scrollRoot.querySelectorAll("section[id]")
+        );
+        const navLinks = Array.from(
+          document.querySelectorAll(".topnav-link[data-nav]")
+        );
 
-      if (emailErr) {
-        hasError = true;
-        emailError.textContent = emailErr;
-        emailInput.classList.add("error");
-      }
-      if (passErr) {
-        hasError = true;
-        passwordError.textContent = passErr;
-        passwordInput.classList.add("error");
-      }
+        const setActive = (id) => {
+          navLinks.forEach((a) => {
+            const active = a.dataset.nav === id;
+            a.classList.toggle("is-active", active);
+            if (active) a.setAttribute("aria-current", "page");
+            else a.removeAttribute("aria-current");
+          });
+        };
 
-      if (hasError) return;
+        // 点击导航：立即高亮（滚动完成后 IntersectionObserver 会再校准一次）
+        navLinks.forEach((a) => {
+          a.addEventListener("click", () => setActive(a.dataset.nav));
+        });
 
-      submitBtn.disabled = true;
-      submitBtn.classList.add("loading");
-      submitBtn.querySelector("span:first-child").textContent = "登录中…";
+        // 滚动吸附时：自动高亮当前屏的 section
+        const io = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((e) => e.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible && visible.target && visible.target.id) {
+              setActive(visible.target.id);
+            }
+          },
+          {
+            root: scrollRoot,
+            threshold: [0.4, 0.55, 0.7],
+          }
+        );
 
-      // 这里替换为你的实际登录接口调用
-      // 示例：fetch('/api/login', { method: 'POST', body: JSON.stringify({ ... }) })
-      setTimeout(() => {
-        // 模拟登录成功
-        alert("登录成功（请在此处接入真实后端接口）");
-        submitBtn.disabled = false;
-        submitBtn.classList.remove("loading");
-        submitBtn.querySelector("span:first-child").textContent = "登录";
-      }, 1000);
-    });
-  </script>
-</body>
+        sections.forEach((s) => io.observe(s));
+        setActive("home");
+      })();
+    </script>
+  </body>
 </html>
