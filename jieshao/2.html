@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>关于我 - 杨佳蕊</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              warmGray: "#6B7280",
+              mistBlue: "#9FB8D3",
+              lightBeige: "#F7F3E9",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background-color: #f7f3e9;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-lightBeige">
+    <!-- 顶部简洁导航/Logo -->
+    <header class="w-full bg-white shadow-sm">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div class="text-base font-semibold tracking-wide text-gray-800">
+          杨佳蕊
+        </div>
+        <div class="hidden gap-4 text-sm text-warmGray sm:flex">
+          <span>首页</span>
+          <span class="font-medium text-mistBlue">关于我</span>
+          <span>经历</span>
+          <span>项目</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="px-4 py-10 sm:py-12">
+      <section
+        class="mx-auto w-full max-w-6xl rounded-3xl bg-[#F7F3E9] px-4 pb-10 pt-6 sm:px-8 sm:pb-12 sm:pt-8"
+      >
+        <!-- 标题 -->
+        <div class="mb-8 text-center sm:mb-10">
+          <h1 class="text-2xl font-semibold text-gray-800 sm:text-3xl">
+            关于我
+          </h1>
+        </div>
+
+        <!-- 上三卡片：产品思维 / 数据洞察 / AI赋能 -->
+        <div
+          class="grid gap-4 sm:grid-cols-3 sm:gap-6"
+        >
+          <!-- 产品思维 -->
+          <div
+            class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+          >
+            <div class="mb-4 flex items-center gap-2">
+              <span
+                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E9F0FF]"
+              >
+                <span class="h-4 w-4 rounded-full border-2 border-mistBlue"></span>
+              </span>
+              <span class="text-base font-semibold text-gray-800">
+                产品思维
+              </span>
+            </div>
+            <p class="text-sm leading-relaxed text-warmGray">
+              从用户需求出发，构建完整产品方案，关注体验与商业价值的平衡。
+            </p>
+          </div>
+
+          <!-- 数据洞察 -->
+          <div
+            class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+          >
+            <div class="mb-4 flex items-center gap-2">
+              <span
+                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#F1E9FF]"
+              >
+                <span class="h-4 w-4 rounded-sm border-2 border-mistBlue"></span>
+              </span>
+              <span class="text-base font-semibold text-gray-800">
+                数据洞察
+              </span>
+            </div>
+            <p class="text-sm leading-relaxed text-warmGray">
+              10万+样本分析经验，擅长通过数据发现问题与增长机会。
+            </p>
+          </div>
+
+          <!-- AI赋能 -->
+          <div
+            class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+          >
+            <div class="mb-4 flex items-center gap-2">
+              <span
+                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E7F5FF]"
+              >
+                <span class="h-4 w-4 rounded-md border-2 border-mistBlue"></span>
+              </span>
+              <span class="text-base font-semibold text-gray-800">
+                AI赋能
+              </span>
+            </div>
+            <p class="text-sm leading-relaxed text-warmGray">
+              AIGC工具深度实践，具备智能体设计和AI在业务场景中的落地经验。
+            </p>
+          </div>
+        </div>
+
+        <!-- 下方两大卡片：教育背景 + 联系方式 -->
+        <div
+          class="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-[2fr,1.4fr] sm:gap-6"
+        >
+          <!-- 教育背景 -->
+          <div
+            class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+          >
+            <div class="mb-4 flex items-center gap-2">
+              <span
+                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E9F0FF]"
+              >
+                <span class="h-4 w-4 rounded-full border-2 border-mistBlue"></span>
+              </span>
+              <span class="text-base font-semibold text-gray-800">
+                教育背景
+              </span>
+            </div>
+
+            <div class="space-y-1 text-sm text-warmGray">
+              <p class="font-medium text-gray-800">
+                南京农业大学 · 数据科学与大数据技术（本科）
+              </p>
+              <p>2021.09 - 2025.06</p>
+              <p>
+                主修课程：大数据处理与分析、Python/Java程序设计、机器学习、数据建模、软件工程等。
+              </p>
+            </div>
+          </div>
+
+          <!-- 联系方式 -->
+          <div
+            class="flex h-full flex-col rounded-2xl bg-white px-6 py-6 shadow-[0_8px_24px_rgba(148,163,184,0.25)]"
+          >
+            <div class="mb-4 flex items-center gap-2">
+              <span
+                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E7F5FF]"
+              >
+                <span class="h-4 w-4 rounded-md border-2 border-mistBlue"></span>
+              </span>
+              <span class="text-base font-semibold text-gray-800">
+                联系方式
+              </span>
+            </div>
+
+            <div class="space-y-2 text-sm text-warmGray">
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-gray-500">电话</span>
+                <span class="font-medium text-gray-800">151 3539 5853</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-gray-500">邮箱</span>
+                <span class="font-medium text-gray-800">3215641086@qq.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
